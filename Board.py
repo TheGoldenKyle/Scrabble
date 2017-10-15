@@ -1,4 +1,3 @@
-from Entities import *
 from Managers import *
 from LetterGenerator import *
 
@@ -8,7 +7,7 @@ class Board:
     def __init__(self, player):
         self.player = player
         self.letter_generator = LetterGenerator()
-        self.checker = WordManager()
+        self.word_manager = WordManager()
         self.tiles = self.create_tiles()
         self.frame_count = 0
         self.words_list = set()
@@ -25,16 +24,27 @@ class Board:
             tiles.append(row_tiles)
         return tiles
 
-    def check_if_good_move(self, changed_tiles):
+    def check_if_good_move(self, changed_tiles, turn):
         if len(changed_tiles) < MIN_WORD_SIZE:
+            return False
+        if turn != 1 and not self.touching_other_letters(changed_tiles):
             return False
         self.words_list = set()
         self.check_horizontal_words(changed_tiles)
         self.check_vertical_words(changed_tiles)
         for word in self.words_list:
-            if len(self.words_list) == 0 or not self.checker.check_word(word.lower()):
+            if len(self.words_list) == 0 or not self.word_manager.check_word(word.lower()):
                 return False
         return True
+
+    def touching_other_letters(self, changed_tiles):
+        for row, col in changed_tiles:
+            for i in range(row - 1, row + 2):
+                for j in range(col - 1, col + 2):
+                    if (i, j) not in changed_tiles and BOARD_SIZE > i >= 0 and BOARD_SIZE > j >= 0 \
+                     and self.tiles[i][j].letter != ' ':
+                        return True
+        return False
 
     def check_horizontal_words(self, changed_tiles):
         for loc in changed_tiles:

@@ -12,13 +12,13 @@ class WordManager:
     def check_word(self, string):
         return string in self.words
 
-    def find_applicable_words(self, letters): # Find all words that can be made using a set of letters
+    def find_applicable_words(self, letters):  # Find all words that can be made using a set of letters
         letters = list(letters)
         applicable_words = set()
         for word in self.words:
             has_extras = False
             word_list = list(word)
-            letters_temp = list(letters)
+            letters_temp = letters[:]
             for letter in word_list:
                 if letter not in letters_temp:
                     has_extras = True

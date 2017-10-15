@@ -1,8 +1,11 @@
-from Player import *
-from Board import *
+from Player import Player
+from Board import Board
+from LetterGenerator import LetterGenerator
+from constants import *
 from pygame.locals import *
 from pygame import time
 from Renderer import Renderer
+import pygame
 import _thread
 import sys
 import time
@@ -22,6 +25,7 @@ class Main:
         self.board = Board(self.player)
         self.render_engine = Renderer(self.board, self.screen)
         self.running = True
+        self.turn = 1
         _thread.start_new_thread(self.start(), ())
 
     def start(self):
@@ -58,6 +62,7 @@ class Main:
                         if self.render_engine.arrow.rect.collidepoint(x, y):
                             self.check_turn(changed_tiles)
                             changed_tiles = list()
+                            self.turn += 1
             self.run()
 
     def run(self):
@@ -72,10 +77,11 @@ class Main:
         sys.exit()
 
     def check_turn(self, changed_tiles):
-        if self.board.check_if_good_move(changed_tiles):
-            self.player.points += self.board.checker.calculate_points(self.board.words_list)
+        if self.board.check_if_good_move(changed_tiles, self.turn):
+            self.player.points += self.board.word_manager.calculate_points(self.board.words_list)
             self.board.regenerate_randoms()
         else:
             self.board.revert(changed_tiles)
 
-m = Main()
+
+Main()

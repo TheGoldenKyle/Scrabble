@@ -12,13 +12,12 @@ class Renderer:
         self.arrow = Arrow()
         self.board = board
         self.player = self.board.player
-        self.points_font = pygame.font.SysFont(FONT, FONT_SIZE)
 
     def render(self):
-        self.render_tiles()
-        self.render_player_tiles(self.board.player)
-        self.render_arrow()
         self.render_score()
+        self.render_arrow()
+        self.render_tiles()
+        self.render_player_tiles()
 
     def render_tiles(self):
         for row in range(BOARD_SIZE):
@@ -28,19 +27,19 @@ class Renderer:
                 tile_texture = self.texture_manager.get_tile_texture(tile, TILE_SIZE)
                 self.screen.blit(tile_texture, (x, y))
 
-    def render_player_tiles(self, player):
+    def render_player_tiles(self):
         mx, my = pygame.mouse.get_pos()
         for i in range(STARTING_RANDOMS):
-            x, y = player.tiles[i].x, player.tiles[i].y
-            if player.tiles[i].being_dragged:
+            x, y = self.player.tiles[i].x, self.player.tiles[i].y
+            if self.player.tiles[i].being_dragged:
                 mx -= DRAGGED_TILE_SIZE // 2
                 my -= DRAGGED_TILE_SIZE // 2
-                tile_texture = self.texture_manager.get_tile_texture(player.tiles[i], DRAGGED_TILE_SIZE)
+                tile_texture = self.texture_manager.get_tile_texture(self.player.tiles[i], DRAGGED_TILE_SIZE)
                 self.screen.blit(tile_texture, (mx, my))
-            elif player.tiles[i].visible:
-                tile_texture = self.texture_manager.get_tile_texture(player.tiles[i])
+            elif self.player.tiles[i].visible:
+                tile_texture = self.texture_manager.get_tile_texture(self.player.tiles[i])
                 self.screen.blit(tile_texture, (x, y))
-                player.tiles[i].rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
+                self.player.tiles[i].rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
 
     def render_arrow(self):
         x, y = 8*81 + 6, 9*83 + 65
@@ -49,5 +48,6 @@ class Renderer:
         self.arrow.set_rect(x, y)
 
     def render_score(self):
-        label = self.points_font.render((str(self.player.points) + " Points"), True, (0, 0, 0))
+        font = pygame.font.SysFont(FONT, FONT_SIZE)
+        label = font.render((str(self.player.points) + " Points"), True, (0, 0, 0))
         self.screen.blit(label, (40, 35))
