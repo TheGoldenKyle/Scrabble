@@ -27,54 +27,52 @@ class Board:
 
     def check_if_good_move(self, changed_tiles):
         if len(changed_tiles) < MIN_WORD_SIZE:
-            print("False")
             return False
         self.words_list = set()
         self.check_horizontal_words(changed_tiles)
         self.check_vertical_words(changed_tiles)
         for word in self.words_list:
             if len(self.words_list) == 0 or not self.checker.check_word(word.lower()):
-                print("False")
                 return False
-        print(self.words_list)
-        print("True")
         return True
 
     def check_horizontal_words(self, changed_tiles):
         for loc in changed_tiles:
+            row, col = loc[0], loc[1]
             potential_word = ""
-            row = int(loc[0:loc.index(",")])
-            col = int(loc[loc.index(",") + 1:])
-            last_letter = None
-            next_letter = None
-            while last_letter != ' ' and self.tile_exists_at(row, col - 1):
-                last_letter = self.tiles[row][col - 1].letter
+            last_letter, next_letter = None, None
+            while last_letter != ' ':
+                last_letter = self.letter_at(row, col - 1)
                 col -= 1
             col += 1
             while next_letter != ' ':
                 potential_word += self.tiles[row][col].letter
-                next_letter = self.tiles[row][col + 1].letter
+                next_letter = self.letter_at(row, col + 1)
                 col += 1
-            if len(potential_word) > MIN_WORD_SIZE:
+            if len(potential_word) >= MIN_WORD_SIZE:
                 self.words_list.add(potential_word)
 
     def check_vertical_words(self, changed_tiles):
         for loc in changed_tiles:
+            row, col = loc[0], loc[1]
             potential_word = ""
-            row = int(loc[0:loc.index(",")])
-            col = int(loc[loc.index(",") + 1:])
-            last_letter = None
-            next_letter = None
-            while last_letter != ' ' and self.tile_exists_at(row, col):
-                last_letter = self.tiles[row - 1][col].letter
+            last_letter, next_letter = None, None
+            while last_letter != ' ':
+                last_letter = self.letter_at(row - 1, col)
                 row -= 1
             row += 1
-            while next_letter != ' ' and self.tile_exists_at(row, col):
+            while next_letter != ' ':
                 potential_word += self.tiles[row][col].letter
-                next_letter = self.tiles[row + 1][col].letter
+                next_letter = self.letter_at(row + 1, col)
                 row += 1
-            if len(potential_word) > MIN_WORD_SIZE:
+            if len(potential_word) >= MIN_WORD_SIZE:
                 self.words_list.add(potential_word)
+
+    def letter_at(self, row, col):
+        if self.tile_exists_at(row, col):
+            return self.tiles[row][col].letter
+        else:
+            return ' '
 
     def regenerate_randoms(self):
         for tile in self.player.tiles:
@@ -83,9 +81,7 @@ class Board:
                 tile.visible = True
 
     def revert(self, changed_tiles):
-        for loc in changed_tiles:
-            changed_tile_row = int(loc[0:loc.index(",")])
-            changed_tile_col = int(loc[loc.index(",") + 1:])
+        for changed_tile_row, changed_tile_col in changed_tiles:
             for row in self.tiles:
                 for tile in row:
                     if tile.row == changed_tile_row and tile.col == changed_tile_col:
@@ -95,4 +91,4 @@ class Board:
                 tile.visible = True
 
     def tile_exists_at(self, row, col):
-        return BOARD_SIZE - 1 > row >= 0 and BOARD_SIZE - 1 > col >= 0
+        return BOARD_SIZE > row >= 0 and BOARD_SIZE > col >= 0

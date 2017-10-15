@@ -41,7 +41,7 @@ class Main:
                         for row in self.board.tiles:
                             for tile in row:
                                 if tile.rect.colliderect(pygame.Rect(x, y, 1, 1)):
-                                    changed_tiles.append(str(tile.row) + "," + str(tile.col))
+                                    changed_tiles.append((tile.row, tile.col))
                                     tile.change_to(tile_being_dragged.letter)
                                     tile.occupied = True
                                     tile_being_dragged.visible = False
@@ -56,7 +56,6 @@ class Main:
                                         tile_being_dragged = random_tile
                                         time.sleep(0.5)
                         if self.render_engine.arrow.rect.collidepoint(x, y):
-                            print("CLICK")
                             self.check_turn(changed_tiles)
                             changed_tiles = list()
             self.run()
@@ -73,15 +72,10 @@ class Main:
         sys.exit()
 
     def check_turn(self, changed_tiles):
-        print("Checking Move")
         if self.board.check_if_good_move(changed_tiles):
-            print("Good Move")
-            print("WORDS", self.board.words_list)
-            print("POINTS", self.board.checker.calculate_points(self.board.words_list))
             self.player.points += self.board.checker.calculate_points(self.board.words_list)
             self.board.regenerate_randoms()
         else:
-            print("REVERT")
             self.board.revert(changed_tiles)
 
 m = Main()
