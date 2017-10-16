@@ -1,5 +1,8 @@
-from Managers import *
-from LetterGenerator import *
+from Managers import WordManager
+from LetterGenerator import LetterGenerator
+from Entities import Tile, Arrow, BackArrow
+from constants import *
+import pygame
 
 
 class Board:
@@ -8,6 +11,7 @@ class Board:
         self.player = player
         self.letter_generator = LetterGenerator()
         self.word_manager = WordManager()
+        self.arrow, self.back_arrow = Arrow(), BackArrow()
         self.tiles = self.create_tiles()
         self.frame_count = 0
         self.words_list = set()

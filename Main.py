@@ -63,6 +63,9 @@ class Main:
                             self.check_turn(changed_tiles)
                             changed_tiles = list()
                             self.turn += 1
+                        elif self.render_engine.back_arrow.rect.collidepoint(x, y):
+                            self.board.revert(changed_tiles)
+                            changed_tiles = list()
             self.run()
 
     def run(self):

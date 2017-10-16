@@ -53,7 +53,7 @@ class WordManager:
 class TextureManager:
 
     def __init__(self):
-        self.full_texture = pygame.image.load(TEXTURE_NAME)
+        self.full_texture = pygame.image.load(TILE_TEXTURE)
         self.texture_cache = dict()  # Cache for loaded textures
         time.sleep(2)
 
@@ -70,9 +70,16 @@ class TextureManager:
     def get_arrow_texture(self, size=79):
         if ('arrow', size) not in self.texture_cache.keys():
             self.texture_cache[('arrow', size)] = pygame.image.load("arrow.png").convert_alpha()
-            if size != 79:
+            if size != ARROW_SIZE:
                 self.texture_cache[('arrow', size)] = pygame.transform.scale(self.texture_cache[('arrow', size)], (size, size))
         return self.texture_cache[('arrow', size)]
+
+    def get_back_arrow_texture(self, size=55):
+        if ('back_arrow', size) not in self.texture_cache.keys():
+            self.texture_cache[('back_arrow', size)] = pygame.image.load("backarrow.png").convert_alpha()
+            if size != BACK_ARROW_SIZE:
+                self.texture_cache[('back_arrow', size)] = pygame.transform.scale(self.texture_cache[('back_arrow', size)], (size, size))
+        return self.texture_cache[('back_arrow', size)]
 
     def get_coordinates(self, letter):
         letter_coordinates = LETTER_LOCATIONS[letter]

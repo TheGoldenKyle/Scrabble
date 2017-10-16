@@ -1,6 +1,5 @@
 from constants import *
 from Managers import TextureManager
-from Entities import Arrow
 import pygame
 
 
@@ -9,13 +8,13 @@ class Renderer:
     def __init__(self, board, screen):
         self.screen = screen
         self.texture_manager = TextureManager()
-        self.arrow = Arrow()
         self.board = board
+        self.arrow, self.back_arrow = board.arrow, board.back_arrow
         self.player = self.board.player
 
     def render(self):
         self.render_score()
-        self.render_arrow()
+        self.render_arrows()
         self.render_tiles()
         self.render_player_tiles()
 
@@ -41,11 +40,11 @@ class Renderer:
                 self.screen.blit(tile_texture, (x, y))
                 self.player.tiles[i].rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
 
-    def render_arrow(self):
-        x, y = 8*81 + 6, 9*83 + 65
-        arrow_texture = self.texture_manager.get_arrow_texture()
-        self.screen.blit(arrow_texture, (x, y))
-        self.arrow.set_rect(x, y)
+    def render_arrows(self):
+        arrow_texture = self.texture_manager.get_arrow_texture(ARROW_SIZE)
+        back_arrow_texture = self.texture_manager.get_back_arrow_texture(BACK_ARROW_SIZE)
+        self.screen.blit(back_arrow_texture, (BACK_ARROW_X, BACK_ARROW_Y))
+        self.screen.blit(arrow_texture, (ARROW_X, ARROW_Y))
 
     def render_score(self):
         font = pygame.font.SysFont(FONT, FONT_SIZE)

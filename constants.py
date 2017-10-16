@@ -1,6 +1,6 @@
 SCREEN_WIDTH = 740
 SCREEN_HEIGHT = 910
-TEXTURE_NAME = "letters.png"
+TILE_TEXTURE = "letters.png"
 BACKGROUND_IMAGE = "background.png"
 
 STARTING_RANDOMS = 8
@@ -23,3 +23,8 @@ LETTER_LOCATIONS = {'A': "2,2", 'B': "83,2", 'C': "164,2", 'D': "245,2", 'E': "3
 FONT = "times_new_roman"
 FONT_SIZE = 24
 
+ARROW_SIZE = 79
+ARROW_X, ARROW_Y = 8 * 81 + 6, 9 * 83 + 65
+
+BACK_ARROW_SIZE = 55
+BACK_ARROW_X, BACK_ARROW_Y = 8 * 81 + 22, 3

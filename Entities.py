@@ -24,8 +24,7 @@ class Tile(pygame.sprite.Sprite):
             return old_letter
 
         def reset(self):
-            self.x = self.starting_x
-            self.y = self.starting_y
+            self.x, self.y = self.starting_x, self.starting_y
             self.being_dragged = False
 
 
@@ -33,8 +32,13 @@ class Arrow(pygame.sprite.Sprite):
 
     def __init__(self, size=79):
         super().__init__()
-        self.rect, self.x, self.y, self.size = None, None, None, size
+        self.x, self.y = ARROW_X, ARROW_Y
+        self.rect = pygame.Rect(self.x, self.y, size, size)
 
-    def set_rect(self, x, y):
-        self.x, self.y = x, y
-        self.rect = pygame.Rect(x, y, self.size, self.size)
+
+class BackArrow(pygame.sprite.Sprite):
+
+    def __init__(self, size=79):
+        super().__init__()
+        self.x, self.y = BACK_ARROW_X, BACK_ARROW_Y
+        self.rect = pygame.Rect(self.x, self.y, size, size)
