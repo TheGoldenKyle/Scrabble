@@ -1,7 +1,7 @@
 SCREEN_WIDTH = 740
 SCREEN_HEIGHT = 910
-TILE_TEXTURE = "letters.png"
-BACKGROUND_IMAGE = "background.png"
+TILE_TEXTURE = "resources/letters.png"
+BACKGROUND_IMAGE = "resources/background.png"
 
 STARTING_RANDOMS = 8
 MIN_STARTING_WORDS = 10
@@ -10,6 +10,8 @@ MIN_WORD_SIZE = 2
 BOARD_SIZE = 11
 TILE_SIZE = 65
 DRAGGED_TILE_SIZE = 83
+
+LETTERS = "AAAAAAAAABBCCDDDDEEEEEEEEEEEEFFGGGHHIIIIIIIIIJKLLLLMMNNNNNNOOOOOOOOPPQRRRRRRSSSSTTTTTTUUUUVVWWXUUZ"
 
 LETTER_VALUES = {'E': 1, 'A': 1, 'I': 1, 'O': 1, 'N': 1, 'R': 1, 'T': 1, 'L': 1, 'S': 1, 'U': 1, 'D': 2, 'G': 2,
                  'B': 3, 'C': 3, 'M': 3, 'P': 3, 'F': 4, 'H': 4, 'V': 4, 'W': 4, 'Y': 4, 'K': 5, 'J': 8, 'X': 8,
@@ -23,8 +25,10 @@ LETTER_LOCATIONS = {'A': "2,2", 'B': "83,2", 'C': "164,2", 'D': "245,2", 'E': "3
 FONT = "times_new_roman"
 FONT_SIZE = 24
 
+ARROW_IMAGE = "resources/arrow.png"
 ARROW_SIZE = 79
 ARROW_X, ARROW_Y = 8 * 81 + 6, 9 * 83 + 65
 
+BACK_ARROW_IMAGE = "resources/backarrow.png"
 BACK_ARROW_SIZE = 55
 BACK_ARROW_X, BACK_ARROW_Y = 8 * 81 + 22, 3

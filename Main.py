@@ -1,10 +1,10 @@
 from Player import Player
 from Board import Board
-from LetterGenerator import LetterGenerator
 from constants import *
 from pygame.locals import *
 from pygame import time
 from Renderer import Renderer
+from Managers import LetterManager
 import pygame
 import _thread
 import sys
@@ -18,7 +18,7 @@ class Main:
         pygame.display.set_caption("Scrabble")
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.background = pygame.image.load(BACKGROUND_IMAGE).convert_alpha()
-        self.letter_generator = LetterGenerator()
+        self.letter_generator = LetterManager()
         self.clock = pygame.time.Clock()
         self.player = Player()
         self.player.tiles = self.letter_generator.create_player_tiles(STARTING_RANDOMS)
