@@ -1,7 +1,6 @@
+import pygame
 from constants import *
 from Managers import TextureManager
-import pygame
-
 
 class Renderer:
 
@@ -11,14 +10,17 @@ class Renderer:
         self.board = board
         self.arrow, self.back_arrow = board.arrow, board.back_arrow
         self.player = self.board.player
+        self.arrow_click, self.back_arrow_click = False, False
 
     def render(self):
+        """ Calls each render function """
         self.render_score()
         self.render_arrows()
         self.render_tiles()
         self.render_player_tiles()
 
     def render_tiles(self):
+        """ Renders the board tiles (not including the tiles the player hasn't placed """
         for row in range(BOARD_SIZE):
             for col in range(BOARD_SIZE):
                 x, y = row * TILE_SIZE + (row + 1) + 5, col * TILE_SIZE + (col + 1) + 60
@@ -27,6 +29,7 @@ class Renderer:
                 self.screen.blit(tile_texture, (x, y))
 
     def render_player_tiles(self):
+        """ Renders player's unplaced tiles. """
         mx, my = pygame.mouse.get_pos()
         for i in range(STARTING_RANDOMS):
             x, y = self.player.tiles[i].x, self.player.tiles[i].y
@@ -41,12 +44,21 @@ class Renderer:
                 self.player.tiles[i].rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
 
     def render_arrows(self):
-        arrow_texture = self.texture_manager.get_arrow_texture(ARROW_SIZE)
-        back_arrow_texture = self.texture_manager.get_back_arrow_texture(BACK_ARROW_SIZE)
-        self.screen.blit(back_arrow_texture, (BACK_ARROW_X, BACK_ARROW_Y))
-        self.screen.blit(arrow_texture, (ARROW_X, ARROW_Y))
+        """ Renders next move button (bottom right), and reset move button (top right) """
+        arrow_texture, arrow_clicked_texture = self.texture_manager.get_arrow_textures(ARROW_SIZE)
+        back_arrow_texture, back_arrow_clicked_texture = self.texture_manager.get_back_arrow_textures(BACK_ARROW_SIZE)
+        if self.arrow_click:
+            self.screen.blit(arrow_clicked_texture, (ARROW_X, ARROW_Y))
+        else:
+            self.screen.blit(arrow_texture, (ARROW_X, ARROW_Y))
+
+        if self.back_arrow_click:
+            self.screen.blit(back_arrow_clicked_texture, (BACK_ARROW_X, BACK_ARROW_Y))
+        else:
+            self.screen.blit(back_arrow_texture, (BACK_ARROW_X, BACK_ARROW_Y))
 
     def render_score(self):
+        """ Renders the player's score """
         font = pygame.font.SysFont(FONT, FONT_SIZE)
         label = font.render((str(self.player.points) + " Points"), True, (0, 0, 0))
         self.screen.blit(label, (40, 35))

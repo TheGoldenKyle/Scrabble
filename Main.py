@@ -1,14 +1,13 @@
-from Player import Player
-from Board import Board
-from constants import *
-from pygame.locals import *
-from pygame import time
-from Renderer import Renderer
-from Managers import LetterManager
 import pygame
 import _thread
 import sys
 import time
+from Player import Player
+from Board import Board
+from constants import *
+from pygame.locals import *
+from Renderer import Renderer
+from Managers import LetterManager
 
 
 class Main:
@@ -32,8 +31,10 @@ class Main:
         player_dragging_tile = False
         tile_being_dragged = None
         changed_tiles = list()
+        next_arrow_click, revert_arrow_click = False, False
         while self.running:
             for event in pygame.event.get():
+
                 if event.type == QUIT:
                     self.end_process()
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
@@ -60,24 +61,46 @@ class Main:
                                         tile_being_dragged = random_tile
                                         time.sleep(0.5)
                         if self.render_engine.arrow.rect.collidepoint(x, y):
-                            self.check_turn(changed_tiles)
-                            changed_tiles = list()
-                            self.turn += 1
+                            next_arrow_click = True
+                            self.render_engine.arrow_click = True
                         elif self.render_engine.back_arrow.rect.collidepoint(x, y):
-                            self.board.revert(changed_tiles)
-                            changed_tiles = list()
+                            revert_arrow_click = True
+                            self.render_engine.back_arrow_click = True
+                if event.type == MOUSEBUTTONUP:
+                    x, y = event.pos
+                    if next_arrow_click and self.render_engine.arrow.rect.collidepoint(x, y):
+                        self.next_turn(changed_tiles)
+                        changed_tiles = list()
+                    elif revert_arrow_click and self.render_engine.back_arrow.rect.collidepoint(x, y):
+                        self.board.revert(changed_tiles)
+                        changed_tiles = list()
+                        self.render_engine.back_arrow_click = False
             self.run()
 
     def run(self):
+        """
+        Calls the render_engine to render the next frame and then updates the display.
+        :return: None
+        """
         self.clock.tick(60)
         self.screen.blit(self.background, (0, 0))
         self.render_engine.render()
         pygame.display.update()
 
     def end_process(self):
+        """
+        Exits game window and ends game process.
+        :return: None
+        """
         self.running = False
         pygame.quit()
         sys.exit()
+
+    def next_turn(self, changed_tiles):
+        self.check_turn(changed_tiles)
+        print(self.board.word_manager.find_applicable_words(self.letter_generator.tiles_to_string(self.player.tiles)))
+        self.turn += 1
+        self.render_engine.arrow_click = False
 
     def check_turn(self, changed_tiles):
         if self.board.check_if_good_move(changed_tiles, self.turn):

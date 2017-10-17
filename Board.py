@@ -1,8 +1,7 @@
+import pygame
 from Managers import WordManager, LetterManager
 from Entities import Tile, Arrow, BackArrow
 from constants import *
-import pygame
-
 
 class Board:
 

@@ -21,14 +21,15 @@ LETTER_LOCATIONS = {'A': "2,2", 'B': "83,2", 'C': "164,2", 'D': "245,2", 'E': "3
                     'H': "2,83", 'I': "83,83", 'J': "164,83", 'K': "245,83", 'L': "326,83", 'M': "407,83", 'N': "488,83",
                     'O': "2,164", 'P': "83,164", 'Q': "164,164", 'R': "245,164", 'S': "326,164", 'T': "407,164", 'U': "488,164",
                     'V': "2,245", 'W': "83,245", 'X': "164,245", 'Y': "245,245", 'Z': "326,245", ' ': "407,245"}
-
 FONT = "times_new_roman"
 FONT_SIZE = 24
 
 ARROW_IMAGE = "resources/arrow.png"
+ARROW_CLICKED_IMAGE = "resources/arrow_clicked.png"
 ARROW_SIZE = 79
 ARROW_X, ARROW_Y = 8 * 81 + 6, 9 * 83 + 65
 
 BACK_ARROW_IMAGE = "resources/backarrow.png"
+BACK_ARROW_CLICKED_IMAGE = "resources/backarrow_clicked.png"
 BACK_ARROW_SIZE = 55
 BACK_ARROW_X, BACK_ARROW_Y = 8 * 81 + 22, 3
