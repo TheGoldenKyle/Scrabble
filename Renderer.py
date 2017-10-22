@@ -25,7 +25,7 @@ class Renderer:
             for col in range(BOARD_SIZE):
                 x, y = row * TILE_SIZE + (row + 1) + 5, col * TILE_SIZE + (col + 1) + 60
                 tile = self.board.tiles[row][col]
-                tile_texture = self.texture_manager.get_tile_texture(tile, TILE_SIZE)
+                tile_texture = self.texture_manager.get_tile_texture(tile.letter, TILE_SIZE)
                 self.screen.blit(tile_texture, (x, y))
 
     def render_player_tiles(self):
@@ -36,26 +36,27 @@ class Renderer:
             if self.player.tiles[i].being_dragged:
                 mx -= DRAGGED_TILE_SIZE // 2
                 my -= DRAGGED_TILE_SIZE // 2
-                tile_texture = self.texture_manager.get_tile_texture(self.player.tiles[i], DRAGGED_TILE_SIZE)
+                tile_texture = self.texture_manager.get_tile_texture(self.player.tiles[i].letter, DRAGGED_TILE_SIZE)
                 self.screen.blit(tile_texture, (mx, my))
             elif self.player.tiles[i].visible:
-                tile_texture = self.texture_manager.get_tile_texture(self.player.tiles[i])
+                tile_texture = self.texture_manager.get_tile_texture(self.player.tiles[i].letter)
                 self.screen.blit(tile_texture, (x, y))
                 self.player.tiles[i].rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
 
     def render_arrows(self):
         """ Renders next move button (bottom right), and reset move button (top right) """
-        arrow_texture, arrow_clicked_texture = self.texture_manager.get_arrow_textures(ARROW_SIZE)
-        back_arrow_texture, back_arrow_clicked_texture = self.texture_manager.get_back_arrow_textures(BACK_ARROW_SIZE)
         if self.arrow_click:
-            self.screen.blit(arrow_clicked_texture, (ARROW_X, ARROW_Y))
+            arrow_texture = self.texture_manager.texture_cache[('arrow_clicked', ARROW_SIZE)]
         else:
-            self.screen.blit(arrow_texture, (ARROW_X, ARROW_Y))
+            arrow_texture = self.texture_manager.texture_cache[('arrow', ARROW_SIZE)]
 
         if self.back_arrow_click:
-            self.screen.blit(back_arrow_clicked_texture, (BACK_ARROW_X, BACK_ARROW_Y))
+            back_arrow_texture = self.texture_manager.texture_cache[('back_arrow_clicked', BACK_ARROW_SIZE)]
         else:
-            self.screen.blit(back_arrow_texture, (BACK_ARROW_X, BACK_ARROW_Y))
+            back_arrow_texture = self.texture_manager.texture_cache[('back_arrow', BACK_ARROW_SIZE)]
+
+        self.screen.blit(back_arrow_texture, (BACK_ARROW_X, BACK_ARROW_Y))
+        self.screen.blit(arrow_texture, (ARROW_X, ARROW_Y))
 
     def render_score(self):
         """ Renders the player's score """

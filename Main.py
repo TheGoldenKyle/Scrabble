@@ -1,7 +1,6 @@
 import pygame
 import _thread
 import sys
-import time
 from Player import Player
 from Board import Board
 from constants import *
@@ -59,7 +58,6 @@ class Main:
                                         player_dragging_tile = True
                                         random_tile.being_dragged = True
                                         tile_being_dragged = random_tile
-                                        time.sleep(0.5)
                         if self.render_engine.arrow.rect.collidepoint(x, y):
                             next_arrow_click = True
                             self.render_engine.arrow_click = True
@@ -97,17 +95,33 @@ class Main:
         sys.exit()
 
     def next_turn(self, changed_tiles):
-        self.check_turn(changed_tiles)
-        print(self.board.word_manager.find_applicable_words(self.letter_generator.tiles_to_string(self.player.tiles)))
-        self.turn += 1
+        """
+        Moves the game to the next turn, if the previous turn was valid.
+
+        :param changed_tiles: List of Tuples of (row, col) of each tile that has been changed
+                              since the last turn
+        :return: None
+        """
+        if self.check_turn(changed_tiles):
+            self.turn += 1
         self.render_engine.arrow_click = False
 
     def check_turn(self, changed_tiles):
+        """
+        Checks if the current turn is a valid turn.
+
+        :param changed_tiles: List of Tuples of (row, col) of each tile that has been changed
+                              since the last turn
+        :return: True iff the current turn is a valid turn. Else return False.
+        """
+        good_move = False
         if self.board.check_if_good_move(changed_tiles, self.turn):
             self.player.points += self.board.word_manager.calculate_points(self.board.words_list)
             self.board.regenerate_randoms()
+            good_move = True
         else:
             self.board.revert(changed_tiles)
+        return good_move
 
 
 Main()

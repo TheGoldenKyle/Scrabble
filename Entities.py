@@ -14,16 +14,29 @@ class Tile(pygame.sprite.Sprite):
             self.letter = letter
             self.value = LETTER_VALUES[letter]
             self.moved = False
-            self.rect = None
             self.being_dragged = False
 
         def change_to(self, letter):
+            """
+            Changes a tile's letter to (param: letter), and updates it value
+            to the value of (param: letter)
+
+            :param letter: Letter to change the tile to.
+
+            :return: Returns the previous letter of the Tile.
+            """
             old_letter = self.letter
             self.letter = letter
             self.value = LETTER_VALUES[self.letter]
             return old_letter
 
         def reset(self):
+            """
+            Resets the tiles position to its starting position, and sets its
+            being_dragged attribute to False.
+
+            :return: None
+            """
             self.x, self.y = self.starting_x, self.starting_y
             self.being_dragged = False
 

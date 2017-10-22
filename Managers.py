@@ -75,6 +75,7 @@ class WordManager:
     def calc_points_of_word(self, word):
         """
         Calculates the points of a given word based on LETTER_VALUES in constants.py
+
         :param word: String to calculate points of
         :return: Number of points for word
         """
@@ -86,12 +87,25 @@ class WordManager:
 
 class TextureManager:
 
-    def __init__(self):
-        self.full_texture = pygame.image.load(TILE_TEXTURE)
-        self.texture_cache = {}
-        time.sleep(2)
+    texture_cache = {}
 
-    def get_tile_texture(self, tile, size=79):
+    def __init__(self):
+        self.texture_map = pygame.image.load(TILE_TEXTURE)
+        self.cache_textures()
+
+    def cache_textures(self):
+        """
+        Caches textures on startup, saving them in a dictionary (texture_cache)
+
+        :return: None
+        """
+        for ascii_value in range(65, 91):
+            self.get_tile_texture(chr(ascii_value))
+        self.load_arrow_textures(ARROW_SIZE)
+        self.load_back_arrow_textures(BACK_ARROW_SIZE)
+
+
+    def get_tile_texture(self, letter, size=79):
         """
         Will retrieve and add to cache or fetch from cache the texture associated with
         the tile's letter. Will resize the texture if needed
@@ -100,15 +114,14 @@ class TextureManager:
         :param size: Size to resize the tile texture to. By default size=79
         :return: Returns the texture of tile.
         """
-        letter = tile.letter
         if (letter, size) not in self.texture_cache.keys():
             a, b = self.get_coordinates(letter)
-            self.texture_cache[(letter, size)] = self.full_texture.subsurface((a, b, 79, 79))
+            self.texture_cache[(letter, size)] = self.texture_map.subsurface((a, b, 79, 79))
             if size != 79:
                 self.texture_cache[(letter, size)] = pygame.transform.scale(self.texture_cache[(letter, size)], (size, size))
         return self.texture_cache[(letter, size)]
 
-    def get_arrow_textures(self, size=79):
+    def load_arrow_textures(self, size=79):
         """
         Will retrieve and add to cache or fetch from cache the texture associated with
         the next turn arrow in the bottom right of the game board.
@@ -124,9 +137,8 @@ class TextureManager:
             self.texture_cache[('arrow_clicked', size)] = pygame.image.load(ARROW_CLICKED_IMAGE).convert_alpha()
             if size != ARROW_SIZE:
                 self.texture_cache[('arrow_clicked', size)] = pygame.transform.scale(self.texture_cache[('arrow_clicked', size)], (size, size))
-        return self.texture_cache[('arrow', size)], self.texture_cache[('arrow_clicked', size)]
 
-    def get_back_arrow_textures(self, size=55):
+    def load_back_arrow_textures(self, size=55):
         """
         Will retrieve and add to cache or fetch from cache the texture associated with
         the revert turn arrow in the top right of the game board.
@@ -142,7 +154,6 @@ class TextureManager:
             self.texture_cache[('back_arrow_clicked', size)] = pygame.image.load(BACK_ARROW_CLICKED_IMAGE).convert_alpha()
             if size != BACK_ARROW_SIZE:
                 self.texture_cache[('back_arrow_clicked', size)] = pygame.transform.scale(self.texture_cache[('back_arrow_clicked', size)], (size, size))
-        return self.texture_cache[('back_arrow', size)], self.texture_cache[('back_arrow_clicked', size)]
 
     def get_coordinates(self, letter):
         """
