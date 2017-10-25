@@ -3,6 +3,7 @@ from Managers import WordManager, LetterManager
 from Entities import Tile, Arrow, BackArrow
 from constants import *
 
+
 class Board:
 
     def __init__(self, player):
@@ -12,7 +13,7 @@ class Board:
         self.arrow, self.back_arrow = Arrow(), BackArrow()
         self.tiles = self.create_tiles()
         self.frame_count = 0
-        self.words_list = set()
+        self.word_list = set()
 
     def create_tiles(self):
         """
@@ -22,7 +23,7 @@ class Board:
         :return: Returns a square, 2D list of each Tile object in their respective
                  spot on the board.
         """
-        tiles = list()
+        tiles = []
         for row in range(BOARD_SIZE):
             row_tiles = list()
             for col in range(BOARD_SIZE):
@@ -46,13 +47,19 @@ class Board:
             return False
         if turn != 1 and not self.touching_other_letters(changed_tiles):
             return False
-        self.words_list = set()
-        self.check_horizontal_words(changed_tiles)
-        self.check_vertical_words(changed_tiles)
-        for word in self.words_list:
-            if len(self.words_list) == 0 or not self.word_manager.check_word(word.lower()):
+        self.word_list = self.get_words(changed_tiles)
+        if len(self.word_list) == 0:
+            return False
+        for word in self.word_list:
+            if not self.word_manager.check_word(word.lower()):
                 return False
         return True
+
+    def get_words(self, changed_tiles):
+        words = set()
+        words |= self.check_horizontal_words(changed_tiles)
+        words |= self.check_vertical_words(changed_tiles)
+        return words
 
     def touching_other_letters(self, changed_tiles):
         """
@@ -67,7 +74,7 @@ class Board:
         for row, col in changed_tiles:
             for i in range(row - 1, row + 2):
                 for j in range(col - 1, col + 2):
-                    if (i, j) not in changed_tiles and BOARD_SIZE > i >= 0 and BOARD_SIZE > j >= 0 \
+                    if (i, j) not in changed_tiles and self.tile_exists_at(i, j) \
                      and self.tiles[i][j].letter != ' ':
                         return True
         return False
@@ -81,8 +88,8 @@ class Board:
                               since the last turn
         :return: Returns whether each tile creates a valid word, horizontally.
         """
-        for loc in changed_tiles:
-            row, col = loc[0], loc[1]
+        words = set()
+        for row, col in changed_tiles:
             potential_word = ""
             last_letter, next_letter = None, None
             while last_letter != ' ':
@@ -94,7 +101,8 @@ class Board:
                 next_letter = self.letter_at(row, col + 1)
                 col += 1
             if len(potential_word) >= MIN_WORD_SIZE:
-                self.words_list.add(potential_word)
+                words.add(potential_word)
+        return words
 
     def check_vertical_words(self, changed_tiles):
         """
@@ -105,8 +113,8 @@ class Board:
                               since the last turn
         :return: Returns whether each tile creates a valid word, vertically.
         """
-        for loc in changed_tiles:
-            row, col = loc[0], loc[1]
+        words = set()
+        for row, col in changed_tiles:
             potential_word = ""
             last_letter, next_letter = None, None
             while last_letter != ' ':
@@ -118,7 +126,8 @@ class Board:
                 next_letter = self.letter_at(row + 1, col)
                 row += 1
             if len(potential_word) >= MIN_WORD_SIZE:
-                self.words_list.add(potential_word)
+                words.add(potential_word)
+        return words
 
     def letter_at(self, row, col):
         """

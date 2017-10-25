@@ -90,7 +90,7 @@ class TextureManager:
     texture_cache = {}
 
     def __init__(self):
-        self.texture_map = pygame.image.load(TILE_TEXTURE)
+        self.texture_map = pygame.image.load(TILE_TEXTURES)
         self.cache_textures()
 
     def cache_textures(self):
@@ -100,12 +100,12 @@ class TextureManager:
         :return: None
         """
         for ascii_value in range(65, 91):
-            self.get_tile_texture(chr(ascii_value))
+            self.get_texture(chr(ascii_value))
         self.load_arrow_textures(ARROW_SIZE)
         self.load_back_arrow_textures(BACK_ARROW_SIZE)
 
 
-    def get_tile_texture(self, letter, size=79):
+    def get_texture(self, name, size=79):
         """
         Will retrieve and add to cache or fetch from cache the texture associated with
         the tile's letter. Will resize the texture if needed
@@ -114,12 +114,12 @@ class TextureManager:
         :param size: Size to resize the tile texture to. By default size=79
         :return: Returns the texture of tile.
         """
-        if (letter, size) not in self.texture_cache.keys():
-            a, b = self.get_coordinates(letter)
-            self.texture_cache[(letter, size)] = self.texture_map.subsurface((a, b, 79, 79))
+        if (name, size) not in self.texture_cache.keys():
+            a, b = self.get_coordinates(name)
+            self.texture_cache[(name, size)] = self.texture_map.subsurface((a, b, 79, 79))
             if size != 79:
-                self.texture_cache[(letter, size)] = pygame.transform.scale(self.texture_cache[(letter, size)], (size, size))
-        return self.texture_cache[(letter, size)]
+                self.texture_cache[(name, size)] = pygame.transform.scale(self.texture_cache[(name, size)], (size, size))
+        return self.texture_cache[(name, size)]
 
     def load_arrow_textures(self, size=79):
         """
@@ -172,7 +172,7 @@ class TextureManager:
 
 class LetterManager:
 
-    alphabet = list(LETTERS)
+    alphabet = list("AAAAAAAAABBCCDDDDEEEEEEEEEEEEFFGGGHHIIIIIIIIIJKLLLLMMNNNNNNOOOOOOOOPPQRRRRRRSSSSTTTTTTUUUUVVWWXUUZ")
 
     def __init__(self):
         self.word_manager = WordManager()
@@ -192,7 +192,8 @@ class LetterManager:
                 letter = random.choice(self.alphabet)
                 tiles.append(Tile(letter))
                 self.alphabet.remove(letter)
-            print(self.word_manager.find_applicable_words(self.tiles_to_string(tiles).lower()))
+            # print(self.word_manager.find_applicable_words(self.tiles_to_string(tiles).lower()))
+            print("Left Letters:", self.alphabet)
             return tiles
 
     def generate_starting(self, num_letters):

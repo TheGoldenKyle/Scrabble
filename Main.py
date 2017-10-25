@@ -29,7 +29,7 @@ class Main:
     def start(self):
         player_dragging_tile = False
         tile_being_dragged = None
-        changed_tiles = list()
+        changed_tiles = []
         next_arrow_click, revert_arrow_click = False, False
         while self.running:
             for event in pygame.event.get():
@@ -38,7 +38,7 @@ class Main:
                     self.end_process()
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     self.check_turn(changed_tiles)
-                    changed_tiles = list()
+                    changed_tiles = []
                 if event.type == MOUSEBUTTONDOWN:
                     x, y = event.pos
                     if player_dragging_tile:
@@ -68,10 +68,10 @@ class Main:
                     x, y = event.pos
                     if next_arrow_click and self.render_engine.arrow.rect.collidepoint(x, y):
                         self.next_turn(changed_tiles)
-                        changed_tiles = list()
+                        changed_tiles = []
                     elif revert_arrow_click and self.render_engine.back_arrow.rect.collidepoint(x, y):
                         self.board.revert(changed_tiles)
-                        changed_tiles = list()
+                        changed_tiles = []
                         self.render_engine.back_arrow_click = False
             self.run()
 
@@ -116,7 +116,7 @@ class Main:
         """
         good_move = False
         if self.board.check_if_good_move(changed_tiles, self.turn):
-            self.player.points += self.board.word_manager.calculate_points(self.board.words_list)
+            self.player.points += self.board.word_manager.calculate_points(self.board.word_list)
             self.board.regenerate_randoms()
             good_move = True
         else:
