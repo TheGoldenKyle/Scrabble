@@ -1,7 +1,8 @@
 import pygame
-from Managers import WordManager, LetterManager
-from Entities import Tile, Arrow, BackArrow
-from constants import *
+
+from src.entities.Entities import Tile, Arrow, BackArrow
+from src.game.constants import *
+from src.helpers.Managers import WordManager, LetterManager
 
 
 class Board:
@@ -24,9 +25,9 @@ class Board:
                  spot on the board.
         """
         tiles = []
-        for row in range(BOARD_SIZE):
+        for row in range(BOARD_ROWS):
             row_tiles = list()
-            for col in range(BOARD_SIZE):
+            for col in range(BOARD_COLS):
                 x, y = row * TILE_SIZE + (row + 1) + 5, col * TILE_SIZE + (col + 1) + 60
                 tile = Tile(' ', row, col)
                 tile.rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
@@ -166,8 +167,8 @@ class Board:
                               since the last turn
         :return: None
         """
-        for changed_tile_row, changed_tile_col in changed_tiles:
-            self.tiles[changed_tile_row][changed_tile_col].change_to(' ')
+        for row, col in changed_tiles:
+            self.tiles[row][col].change_to(' ')
         for tile in self.player.tiles:
             if not tile.visible:
                 tile.visible = True
@@ -181,4 +182,4 @@ class Board:
 
         :return: Returns True iff a tile exists at (row, col). False otherwise.
         """
-        return BOARD_SIZE > row >= 0 and BOARD_SIZE > col >= 0
+        return BOARD_ROWS > row >= 0 and BOARD_COLS > col >= 0

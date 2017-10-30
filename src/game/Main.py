@@ -1,12 +1,14 @@
-import pygame
 import _thread
 import sys
-from Player import Player
-from Board import Board
-from constants import *
+
+import pygame
 from pygame.locals import *
-from Renderer import Renderer
-from Managers import LetterManager
+
+from src.entities.Player import Player
+from src.game.Board import Board
+from src.game.Renderer import Renderer
+from src.game.constants import *
+from src.helpers.Managers import LetterManager
 
 
 class Main:
@@ -15,7 +17,7 @@ class Main:
         pygame.init()
         pygame.display.set_caption("Scrabble")
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.background = pygame.image.load(BACKGROUND_IMAGE).convert_alpha()
+        self.background = self.load_background()
         self.letter_generator = LetterManager()
         self.clock = pygame.time.Clock()
         self.player = Player()
@@ -122,6 +124,11 @@ class Main:
         else:
             self.board.revert(changed_tiles)
         return good_move
+
+    def load_background(self):
+        background = pygame.image.load(BACKGROUND_IMAGE).convert_alpha()
+        background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        return background
 
 
 Main()
