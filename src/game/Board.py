@@ -25,11 +25,12 @@ class Board:
                  spot on the board.
         """
         tiles = []
-        for row in range(BOARD_ROWS):
+        for row in range(BOARD_SIZE):
             row_tiles = list()
-            for col in range(BOARD_COLS):
-                x, y = row * TILE_SIZE + (row + 1) + 5, col * TILE_SIZE + (col + 1) + 60
+            for col in range(BOARD_SIZE):
+                x, y = col * TILE_SIZE + (col + 1) + 5, row * TILE_SIZE + (row + 1) + 60
                 tile = Tile(' ', row, col)
+                tile.x, tile.y = x, y
                 tile.rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
                 row_tiles.append(tile)
             tiles.append(row_tiles)
@@ -182,4 +183,4 @@ class Board:
 
         :return: Returns True iff a tile exists at (row, col). False otherwise.
         """
-        return BOARD_ROWS > row >= 0 and BOARD_COLS > col >= 0
+        return BOARD_SIZE > row >= 0 and BOARD_SIZE > col >= 0

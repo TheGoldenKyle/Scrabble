@@ -35,7 +35,6 @@ class Main:
         next_arrow_click, revert_arrow_click = False, False
         while self.running:
             for event in pygame.event.get():
-
                 if event.type == QUIT:
                     self.end_process()
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:

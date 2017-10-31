@@ -29,12 +29,11 @@ class Renderer:
         Renders the board tiles (not including the tiles the player hasn't placed
         :return: None
         """
-        for row in range(BOARD_ROWS):
-            for col in range(BOARD_COLS):
-                x, y = col * TILE_SIZE + (col + 1) + 5, row * TILE_SIZE + (row + 1) + 60
+        for row in range(BOARD_SIZE):
+            for col in range(BOARD_SIZE):
                 tile = self.board.tiles[row][col]
                 tile_texture = self.texture_manager.get_texture(tile.letter, TILE_SIZE)
-                self.screen.blit(tile_texture, (x, y))
+                self.screen.blit(tile_texture, (tile.x, tile.y))
 
     def render_player_tiles(self):
         """
