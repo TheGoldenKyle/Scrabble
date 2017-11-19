@@ -193,8 +193,6 @@ class LetterManager:
                 letter = random.choice(self.alphabet)
                 tiles.append(Tile(letter))
                 self.alphabet.remove(letter)
-            # print(self.word_manager.find_applicable_words(self.tiles_to_string(tiles).lower()))
-            print("Left Letters:", self.alphabet)
             return tiles
 
     def generate_starting(self, num_letters):

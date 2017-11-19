@@ -55,6 +55,7 @@ class Board:
         for word in self.word_list:
             if not self.word_manager.check_word(word.lower()):
                 return False
+        print("Words created: {0}".format(self.word_list))
         return True
 
     def get_words(self, changed_tiles):

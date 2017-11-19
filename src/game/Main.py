@@ -3,6 +3,7 @@ import sys
 
 import pygame
 from pygame.locals import *
+from logging import Logger
 
 from src.entities.Player import Player
 from src.game.Board import Board
@@ -16,6 +17,7 @@ class Main:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Scrabble")
+        self.logger = Logger("GAME")
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.background = self.load_background()
         self.letter_generator = LetterManager()
@@ -50,6 +52,9 @@ class Main:
                                     tile.change_to(tile_being_dragged.letter)
                                     tile.occupied = True
                                     tile_being_dragged.visible = False
+                                    self.logger.critical("'{0}' dropped at location: ({1}, {2})".format(
+                                                                                         tile_being_dragged.letter,
+                                                                                         tile.row, tile.col))
                         tile_being_dragged.reset()
                         tile_being_dragged = None
                         player_dragging_tile = False
@@ -75,6 +80,8 @@ class Main:
                         changed_tiles = []
                         self.render_engine.back_arrow_click = False
             self.run()
+
+
 
     def run(self):
         """
@@ -125,6 +132,11 @@ class Main:
         return good_move
 
     def load_background(self):
+        """
+        Loads the background image and resizes it to match the dimensions of the window
+
+        :return: Returns the resized background image texture
+        """
         background = pygame.image.load(BACKGROUND_IMAGE).convert_alpha()
         background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
         return background
