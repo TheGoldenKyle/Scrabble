@@ -51,12 +51,7 @@ class Main:
         self.socket.sendto("".encode(), self.server)
         while self.running:
             try:
-                data, ip = self.socket.recvfrom(1024)
-                message = data.decode()
-                print("hello")
-                if len(message) == BOARD_SIZE * BOARD_SIZE:
-                    print("hi")
-                    self.unpackString(message)
+                self.receiveData()
             except:
                 for event in pygame.event.get():
                     if event.type == QUIT:
@@ -103,18 +98,12 @@ class Main:
                             self.render_engine.back_arrow_click = False
             self.run()
 
-    def receive(self):
-        while self.running:
-            try:
-                while True:
-                    print("hello")
-                    data, ip = self.socket.recvfrom(1024)
-                    message = data.decode()
-                    if len(message) == BOARD_SIZE * BOARD_SIZE:
-                        self.unpackString(message)
-                    time.sleep(0.1)
-            except:
-                time.sleep(0.05)
+    def receiveData(self):
+        data, ip = self.socket.recvfrom(1024)
+        message = data.decode()
+        if len(message) == BOARD_SIZE * BOARD_SIZE:
+            self.unpackString(message)
+        time.sleep(0.1)
 
     def run(self):
         """
