@@ -15,6 +15,7 @@ class Tile(pygame.sprite.Sprite):
             self.letter = letter
             self.value = LETTER_VALUES[letter]
             self.moved = False
+            self.temp_place = False
             self.being_dragged = False
 
         def change_to(self, letter):
@@ -39,6 +40,7 @@ class Tile(pygame.sprite.Sprite):
             :return: None
             """
             self.x, self.y = self.starting_x, self.starting_y
+            self.temp_place = False
             self.being_dragged = False
 
 

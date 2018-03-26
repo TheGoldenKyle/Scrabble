@@ -7,7 +7,8 @@ from src.helpers.Managers import WordManager, LetterManager
 
 class Board:
 
-    def __init__(self, player):
+    def __init__(self, player, logger):
+        self.logger = logger
         self.player = player
         self.letter_generator = LetterManager()
         self.word_manager = WordManager()
@@ -48,6 +49,7 @@ class Board:
         if len(changed_tiles) < MIN_WORD_SIZE:
             return False
         if turn != 1 and not self.touching_other_letters(changed_tiles):
+            self.logger.critical("Word is not connected to another word!")
             return False
         self.word_list = self.get_words(changed_tiles)
         if len(self.word_list) == 0:

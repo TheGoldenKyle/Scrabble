@@ -40,10 +40,10 @@ class Renderer:
         Renders player's unplaced tiles.
         :return: None
         """
-        mx, my = pygame.mouse.get_pos()
         for i in range(STARTING_RANDOMS):
             x, y = self.player.tiles[i].x, self.player.tiles[i].y
             if self.player.tiles[i].being_dragged:
+                mx, my = pygame.mouse.get_pos()
                 mx -= DRAGGED_TILE_SIZE // 2
                 my -= DRAGGED_TILE_SIZE // 2
                 tile_texture = self.texture_manager.get_texture(self.player.tiles[i].letter, DRAGGED_TILE_SIZE)
