@@ -20,17 +20,25 @@ class Server:
         player = 0
         while self.running:
             data, ip = self.socket.recvfrom(1024)
+            players = len(self.clients)
             if ip in self.clients:
                 message = data.decode()
                 if self.clients[player] == ip:
                     if message is not "":
-                        print("Player: " + str(player) + " | BOARD: " + message)
-                        self.unpackString(message)
-                    player = (player + 1) % 2
-                    self.socket.sendto(data, (self.host, self.clients[player][1]))
-            elif len(self.clients) < 2:
+                        if message == "QUIT":
+                            self.clients.remove(ip)
+                            print("Player: " + str(player) + " left the game!")
+                        else:
+                            print("Player: " + str(player) + " | BOARD: " + message)
+                            self.unpackString(message)
+                            player = (player + 1) % 2
+                            data = ('-' + message).encode()
+                            self.socket.sendto(data, self.clients[player])
+            elif players < 2:
                 self.clients.append(ip)
                 print("Connection established with " + str(ip) + " PLAYER: " + str(len(self.clients)))
+                if (players + 1) == 1:
+                    self.socket.sendto('-'.encode(), ip)
             time.sleep(0.1)
         self.socket.close()
 
@@ -49,6 +57,12 @@ class Server:
             for k in range(11):
                 self.board[i][k] = string[i * 11:k]
 
+    def packString(self):
+        message = ""
+        for row in range(11):
+            for col in range(11):
+                message += self.board[row][col]
+        return message
 
 
 s = Server()

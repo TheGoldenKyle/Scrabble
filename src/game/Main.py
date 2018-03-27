@@ -1,6 +1,5 @@
 import _thread
 import sys
-import threading
 import socket
 import time
 
@@ -35,12 +34,11 @@ class Main:
         self.render_engine = Renderer(self.board, self.screen)
         self.running = True
         self.turn = 1
+        self.myTurn = False
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.host, self.port))
         self.socket.setblocking(0)
         self.port = self.socket.getsockname()[1]
-        #self.rT = threading.Thread(target=self.receive)
-        #self.rT.start()
         _thread.start_new_thread(self.start(), ())
 
     def start(self):
@@ -59,7 +57,7 @@ class Main:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                         self.check_turn(changed_tiles)
                         changed_tiles = []
-                    if event.type == MOUSEBUTTONDOWN:
+                    if event.type == MOUSEBUTTONDOWN and self.myTurn:
                         x, y = event.pos
                         if player_dragging_tile:
                             for row in self.board.tiles:
@@ -87,7 +85,7 @@ class Main:
                             elif self.render_engine.back_arrow.rect.collidepoint(x, y):
                                 revert_arrow_click = True
                                 self.render_engine.back_arrow_click = True
-                    if event.type == MOUSEBUTTONUP:
+                    if event.type == MOUSEBUTTONUP and self.myTurn:
                         x, y = event.pos
                         if next_arrow_click and self.render_engine.arrow.rect.collidepoint(x, y):
                             self.next_turn(changed_tiles)
@@ -101,8 +99,10 @@ class Main:
     def receiveData(self):
         data, ip = self.socket.recvfrom(1024)
         message = data.decode()
-        if len(message) == BOARD_SIZE * BOARD_SIZE:
-            self.unpackString(message)
+        if message[0] == '-':
+            self.myTurn = True
+        if len(message) == BOARD_SIZE * BOARD_SIZE + 1:
+            self.unpackString(message[1:])
         time.sleep(0.1)
 
     def run(self):
@@ -120,6 +120,7 @@ class Main:
         Exits game window and ends game process.
         :return: None
         """
+        self.socket.sendto("QUIT".encode(), self.server)
         self.running = False
         pygame.quit()
         sys.exit()
@@ -178,5 +179,6 @@ class Main:
 
     def sendBoard(self):
         self.socket.sendto(self.packString().encode(), self.server)
+        self.myTurn = False
 
 Main()
