@@ -13,6 +13,7 @@ class Server:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.host, self.port))
         self.board = self.buildBoard()
+        self.turns = 0
         self.run()
 
     def run(self):
@@ -20,27 +21,39 @@ class Server:
         player = 0
         while self.running:
             data, ip = self.socket.recvfrom(1024)
-            players = len(self.clients)
+            num_players = len(self.clients)
             if ip in self.clients:
                 message = data.decode()
-                if self.clients[player] == ip:
-                    if message is not "":
-                        if message == "QUIT":
-                            self.clients.remove(ip)
-                            print("Player: " + str(player) + " left the game!")
-                        else:
+                if message is not "":
+                    if message == "QUIT":
+                        self.clients.remove(ip)
+                        print("Player: " + str(player) + " left the game!")
+                    elif self.clients[player] == ip:
                             print("Player: " + str(player) + " | BOARD: " + message)
-                            self.unpackString(message)
                             player = (player + 1) % 2
-                            data = ('-' + message).encode()
-                            self.socket.sendto(data, self.clients[player])
-            elif players < 2:
-                self.clients.append(ip)
-                print("Connection established with " + str(ip) + " PLAYER: " + str(len(self.clients)))
-                if (players + 1) == 1:
-                    self.socket.sendto('-'.encode(), ip)
+                            self.unpackString(message)
+                            self.relayTurn(message, player)
+                            self.turns += 1
+            elif num_players < 2:
+                self.addPlayer(ip, num_players + 1)
             time.sleep(0.1)
         self.socket.close()
+
+    def relayTurn(self, message, other_player):
+        self.unpackString(message)
+        data = ('-' + message).encode()
+        self.socket.sendto(data, self.clients[other_player])
+
+    def addPlayer(self, ip, num_players):
+        self.clients.append(ip)
+        print("Connection established with " + str(ip) + " PLAYER: " + str(len(self.clients)))
+        if num_players == 1:
+            self.socket.sendto('-'.encode(), ip)
+        elif num_players == 2:
+            board_data = self.packString()
+            print("Sent gameboard to: " + str(ip))
+            print(board_data.decode())
+            self.socket.sendto(board_data, ip)
 
     def buildBoard(self):
         tiles = []
@@ -55,14 +68,14 @@ class Server:
         assert len(string) == 121
         for i in range(11):
             for k in range(11):
-                self.board[i][k] = string[i * 11:k]
+                self.board[i][k] = string[i * 11 + k]
 
     def packString(self):
         message = ""
         for row in range(11):
             for col in range(11):
                 message += self.board[row][col]
-        return message
+        return message.encode()
 
 
 s = Server()

@@ -101,8 +101,9 @@ class Main:
         message = data.decode()
         if message[0] == '-':
             self.myTurn = True
-        if len(message) == BOARD_SIZE * BOARD_SIZE + 1:
-            self.unpackString(message[1:])
+            message = message[1:]
+        if len(message) == BOARD_SIZE * BOARD_SIZE:
+            self.unpackString(message)
         time.sleep(0.1)
 
     def run(self):
@@ -166,6 +167,7 @@ class Main:
         return background
 
     def unpackString(self, string):
+        print("Unpacking: " + string)
         for row in range(11):
             for col in range(11):
                 self.board.tiles[row][col].change_to(string[row*11 + col])
